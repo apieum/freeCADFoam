@@ -44,6 +44,28 @@ class _AssertRaisesContext(object):
                      (expected_regexp.pattern, str(exc_value)))
         return True
 
+
+
+class _TypeEqualityDict(object):
+
+    def __init__(self, testcase):
+        self.testcase = testcase
+        self._store = {}
+
+    def __setitem__(self, key, value):
+        self._store[key] = value
+
+    def __getitem__(self, key):
+        value = self._store[key]
+        if isinstance(value, basestring):
+            return getattr(self.testcase, value)
+        return value
+
+    def get(self, key, default=None):
+        if key in self._store:
+            return self[key]
+        return default
+
 class Assertize(object):
 
 
@@ -102,8 +124,34 @@ class Assertize(object):
     ]
 
     def __init__(self, myObject=None):
+         # Map types to custom assertEqual functions that will compare
+        # instances of said type in more detail to generate a more useful
+        # error message.
+        self._type_equality_funcs = _TypeEqualityDict(self)
+        self.addTypeEqualityFunc(dict, 'assertDictEqual')
+        self.addTypeEqualityFunc(list, 'assertListEqual')
+        self.addTypeEqualityFunc(tuple, 'assertTupleEqual')
+        self.addTypeEqualityFunc(set, 'assertSetEqual')
+        self.addTypeEqualityFunc(frozenset, 'assertSetEqual')
+        self.addTypeEqualityFunc(unicode, 'assertMultiLineEqual')
+
         if myObject is not None:
             self(myObject.__class__)
+
+    def addTypeEqualityFunc(self, typeobj, function):
+        """Add a type specific assertEqual style function to compare a type.
+
+        This method is for use by TestCase subclasses that need to register
+        their own type equality functions to provide nicer error messages.
+
+        Args:
+            typeobj: The data type to call this function on when both values
+                    are of the same type in assertEqual().
+            function: The callable taking two arguments and an optional
+                    msg= argument that raises self.failureException with a
+                    useful error message when the two arguments are not equal.
+        """
+        self._type_equality_funcs[typeobj] = function
 
     def __call__(self, cls):
         for methodName in self.assertionMethods:

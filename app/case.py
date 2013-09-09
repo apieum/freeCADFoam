@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 import FreeCAD
-
+from app.preprocessing import Preprocessing
+from app.solve import Solve
+from app.postprocessing import Postprocessing
 
 class Case(object):
     def __init__(self, document, with_gui=True):
@@ -9,6 +11,9 @@ class Case(object):
         if with_gui:
             from gui.case import ViewProviderCase
             self.ViewProvider = ViewProviderCase(self.Object.ViewObject)
+        self.preprocessing = Preprocessing()
+        self.solve = Solve()
+        self.postprocessing = Postprocessing()
 
     def run(self):
         raise NotImplemented("Case::run not yet implemented")
