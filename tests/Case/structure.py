@@ -9,16 +9,25 @@ from lettuce import world
 
 @StepsDefinition()
 class StructureSteps(object):
+
     def i_create_a_case(self, step):
         world.Case = Case(world.document)
+
     def document_contains_a_case_object(self, step):
         case = world.document.getObject("Case")
         self.assertEqual(str(type(case)), "<type 'App.FeaturePython'>")
+
     def case_object_contains_a_view_provider_case(self, step):
         case = world.document.getObject("Case")
         self.assertIsInstance(case.ViewObject.Proxy, ViewProviderCase)
+
     def case_object_contains_preprocessing_solve_and_postprocessing_groups(self, step):
         u'''case object contains preprocessing, solve and postprocessing groups'''
         self.assertIsInstance(getattr(world.Case, 'preprocessing'), Preprocessing)
         self.assertIsInstance(getattr(world.Case, 'solve'), Solve)
         self.assertIsInstance(getattr(world.Case, 'postprocessing'), Postprocessing)
+
+    def preprocessing_solve_and_postprocessing_are_childs_of_case_object(self, step):
+        self.assertIn(world.Case.preprocessing.Object, world.Case.Object.Group)
+        self.assertIn(world.Case.solve.Object, world.Case.Object.Group)
+        self.assertIn(world.Case.postprocessing.Object, world.Case.Object.Group)

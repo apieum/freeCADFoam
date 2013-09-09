@@ -8,5 +8,6 @@ Feature: Create a case
         And OpenFoam workbench is loaded
         When I create a Case
         Then document contains a case object
-        case object contains a view provider case
-        case object contains preprocessing, solve and postprocessing groups
+        And case object contains a view provider case
+        And case object contains preprocessing, solve and postprocessing groups
+        And Preprocessing Solve and Postprocessing are childs of case object
