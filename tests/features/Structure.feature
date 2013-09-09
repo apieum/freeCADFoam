@@ -8,4 +8,4 @@ Feature: Create a case
         And OpenFoam workbench is loaded
         When I create a Case
         Then document contains a case object
-        And case object contains a case view provider
+        And case object contains a view provider case
