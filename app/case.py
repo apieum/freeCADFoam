@@ -11,9 +11,9 @@ class Case(object):
         if with_gui:
             from gui.case import ViewProviderCase
             self.ViewProvider = ViewProviderCase(self.Object.ViewObject)
-        self.preprocessing = Preprocessing()
-        self.solve = Solve()
-        self.postprocessing = Postprocessing()
+        self.preprocessing = Preprocessing(self.Object, with_gui)
+        self.solve = Solve(self.Object, with_gui)
+        self.postprocessing = Postprocessing(self.Object, with_gui)
 
     def run(self):
         raise NotImplemented("Case::run not yet implemented")
@@ -24,6 +24,9 @@ class _CaseProxy(object):
         obj.Proxy = self
         obj.addProperty("App::PropertyPythonObject", "newObject")
         obj.newObject = self.newObject
+        obj.addProperty("App::PropertyPythonObject", "Preprocessing")
+        obj.addProperty("App::PropertyPythonObject", "Solve")
+        obj.addProperty("App::PropertyPythonObject", "Postprocessing")
 
     def onChanged(self, fp, prop):
         FreeCAD.Console.PrintMessage("Change property: %s\n" % prop)
