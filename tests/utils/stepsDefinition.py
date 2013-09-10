@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-from assertions import Assertize
 from lettuce.core import STEP_REGISTRY
+
 
 
 def StepsDefinition(*args, **kwargs):
@@ -20,7 +20,6 @@ class __DefineSteps(object):
                 sentence = self.stepSentence(step_method)
                 self.registerStep(sentence, step_method)
 
-        Assertize(self.steps)
         del self.args, self.kwargs
         return steps_class
 

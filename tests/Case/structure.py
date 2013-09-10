@@ -1,11 +1,8 @@
 # -*- coding: utf-8 -*-
-from app.case import Case
-from app.preprocessing import Preprocessing
-from app.solve import Solve
-from app.postprocessing import Postprocessing
+from tests.Base import world, should, be_instance_of, be_of_class, StepsDefinition, be_into
+from App import Case, Preprocessing, Solve, Postprocessing
 from gui.case import ViewProviderCase
-from tests.stepsDefinition import StepsDefinition
-from lettuce import world
+
 
 @StepsDefinition()
 class StructureSteps(object):
@@ -15,19 +12,19 @@ class StructureSteps(object):
 
     def document_contains_a_case_object(self, step):
         case = world.document.getObject("Case")
-        self.assertEqual(str(type(case)), "<type 'App.FeaturePython'>")
+        case |should| be_of_class("FeaturePython")
 
     def case_object_contains_a_view_provider_case(self, step):
         case = world.document.getObject("Case")
-        self.assertIsInstance(case.ViewObject.Proxy, ViewProviderCase)
+        case.ViewObject.Proxy |should| be_instance_of(ViewProviderCase)
 
     def case_object_contains_preprocessing_solve_and_postprocessing_groups(self, step):
         u'''case object contains preprocessing, solve and postprocessing groups'''
-        self.assertIsInstance(getattr(world.Case, 'preprocessing'), Preprocessing)
-        self.assertIsInstance(getattr(world.Case, 'solve'), Solve)
-        self.assertIsInstance(getattr(world.Case, 'postprocessing'), Postprocessing)
+        getattr(world.Case, 'preprocessing') |should| be_instance_of(Preprocessing)
+        getattr(world.Case, 'solve') |should| be_instance_of(Solve)
+        getattr(world.Case, 'postprocessing') |should| be_instance_of(Postprocessing)
 
-    def preprocessing_solve_and_postprocessing_are_childs_of_case_object(self, step):
-        self.assertIn(world.Case.preprocessing.Object, world.Case.Object.Group)
-        self.assertIn(world.Case.solve.Object, world.Case.Object.Group)
-        self.assertIn(world.Case.postprocessing.Object, world.Case.Object.Group)
+    def preprocessing_solve_and_postprocessing_are_children_of_case_object(self, step):
+        world.Case.preprocessing.Object |should| be_into(world.Case.Object.Group)
+        world.Case.solve.Object |should| be_into(world.Case.Object.Group)
+        world.Case.postprocessing.Object |should| be_into(world.Case.Object.Group)

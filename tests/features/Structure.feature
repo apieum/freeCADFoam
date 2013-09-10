@@ -10,4 +10,4 @@ Feature: Create a case
         Then document contains a case object
         And case object contains a view provider case
         And case object contains preprocessing, solve and postprocessing groups
-        And Preprocessing Solve and Postprocessing are childs of case object
+        And Preprocessing Solve and Postprocessing are children of case object
